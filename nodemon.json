@@ -1,0 +1,8 @@
+{
+  "watch": ["dist"],
+  "ext": "js",
+  "ignore": [],
+  "execMap": {
+    "js": "node"
+  }
+}
