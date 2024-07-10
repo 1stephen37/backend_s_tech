@@ -1,6 +1,7 @@
+
 services:
   db:
-    image: postgres:14
+    image: postgres:15
     environment:
       POSTGRES_DB: s_tech
       POSTGRES_USER: root

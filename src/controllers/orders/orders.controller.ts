@@ -7,7 +7,7 @@ ordersController.get('', async (req : Request, res: Response ) => {
     try {
 
     } catch (error : Error | any) {
-        res.status(HttpStatus.InternalServerError).json({error : error.message})
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error : error.message})
     }
 })
 
