@@ -4,10 +4,12 @@ import sequelize from '../../sequelize';
 class Options extends Model {
     public id_option!: string;
     public id_product!: string;
+    public id_gallery!: string;
     public color!: string;
     public price!: number;
     public quantity!: number;
     public memory! : string;
+    public image! : string;
     public is_basic! : boolean;
 }
 
@@ -23,6 +25,13 @@ Options.init(
             references: {
                 model: 'products', // Tên bảng mà bạn muốn liên kết đến
                 key: 'id_product', // Tên cột trong bảng categories mà bạn muốn liên kết đến
+            },
+        },
+        id_gallery: {
+            type: INTEGER,
+            references: {
+                model: 'gallery', // Tên bảng mà bạn muốn liên kết đến
+                key: 'id_gallery', // Tên cột trong bảng categories mà bạn muốn liên kết đến
             },
         },
         color: {
