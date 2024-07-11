@@ -5,12 +5,13 @@ import GalleryService from "../../services/gallery/gallery.service";
 import BrandsService from "../../services/brands/brands.service";
 import OptionsService from "../../services/options/options.service";
 import {Op} from 'sequelize';
+import ProductDetails from "../../entities/product_details/product_details.entity";
+import ProductDetailService from "../../services/productDetails/productDetail.service";
 
 const ProductsController = Router();
 
 ProductsController.get('', async (req: Request, res: Response) => {
     try {
-        let status = req.query.status;
         const page = req.query.page;
         const id_brand = req.query.id_brand;
         const sale = req.query.sale;
@@ -20,7 +21,7 @@ ProductsController.get('', async (req: Request, res: Response) => {
         const property = req.query.property;
         const keyword = req.query.keyword;
         let filter: {
-            where?: { id_brand?: string, name?: {}, status?: number },
+            where?: { id_brand?: string, name?: {} },
             offset?: number,
             limit?: number,
             order?: [[string, string]]
@@ -55,33 +56,15 @@ ProductsController.get('', async (req: Request, res: Response) => {
                 };
             }
         }
-        if (status) {
-            if (filter.where) {
-                filter.where.status = parseInt(status.toString())
-            } else {
-                filter.where = {
-                    status: parseInt(status.toString())
-                };
-            }
-        } else {
-            if (filter.where) {
-                filter.where.status = 1
-            } else {
-                filter.where = {
-                    status: 1
-                };
-            }
-        }
         let count = 0;
-        if (page && !id_brand) {
-            count = await ProductService.getCountProductsByStatus(1);
-        } else if (page && status && !id_brand) {
-            count = await ProductService.getCountProductsByStatus(parseInt(status.toString()));
-        } else if (page && id_brand) {
-            count = await ProductService.getCountProductsByIdBrand(id_brand.toString());
+        if (page && id_brand && !keyword) {
+            count = await ProductService.getCountProductsByBrand(id_brand.toString());
+        } else if (page && keyword) {
+            count = await ProductService.getCountProductsByKeyword(keyword.toString());
+        } else if (page) {
+            count = await ProductService.getCountAllProductsByStatus();
         }
-        console.log(count)
-        let products = await ProductService.FindProductsByFilter(filter);
+        let products = await ProductService.FindAllProducts(filter);
         for (const index in products) {
             const gallery = await GalleryService.FindPrimaryGalleryImageByIdProduct(products[index].id_product);
             if (gallery) products[index].image = gallery.url;
@@ -89,8 +72,8 @@ ProductsController.get('', async (req: Request, res: Response) => {
             if (brand) products[index].brand_name = brand.name;
             const options = await OptionsService.findOneOptionBasicByIdProduct(products[index].id_product, ['color', 'price', 'memory']);
             if (options) {
-                products[index].color = options.color;
                 products[index].memory = options.memory;
+                products[index].color = options.color;
                 products[index].price = options.price;
             }
         }
@@ -106,6 +89,7 @@ ProductsController.get('', async (req: Request, res: Response) => {
             }
         })
     } catch (error: Error | any) {
+        console.log(error.message)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message})
     }
 })
@@ -117,19 +101,26 @@ ProductsController.get('/detail/:id', async (req: Request, res: Response) => {
             res.status(HttpStatus.NO_CONTENT).json({message: 'don\'t have a id to find product'})
         }
         let product = await ProductService.getOneProductPyPk(id);
+        // console.log(product?.ProductDetail);
         if (product) {
-            const gallery = await GalleryService.FindPrimaryGalleryImageByIdProduct(product.id_product);
-            if (gallery) product.image = gallery.url;
             const brand = await BrandsService.FindNameBrandById(product.id_brand);
             if (brand) product.brand_name = brand.name;
-            const optionsList = await OptionsService.findAllOptionsByIdProduct(product.id_product);
+            const detail = await ProductDetailService.findDetailByIdProduct(product.id_product);
+            if(detail) product.detail = detail;
+            let optionsList = await OptionsService.findAllOptionsByIdProduct(product.id_product, ['color', 'price', 'quantity', 'memory', 'id_gallery']);
             if (optionsList) {
-                console.log(optionsList)
+                for (const index in optionsList) {
+                    const gallery = await GalleryService.FindAllGalleryImageById(optionsList[index].id_gallery);
+                    if (gallery) optionsList[index].image = gallery.url;
+                }
+                product.options = optionsList;
             }
         }
+        console.log( 'this is detail product  ' + product);
         if (!product) res.status(HttpStatus.NOT_FOUND).json({message: 'Product not found'});
         res.status(HttpStatus.SUCCESS).json({data: product});
     } catch (error: Error | any) {
+        console.log(error.message)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })

@@ -8,14 +8,15 @@ class Products extends Model {
     public sale_off!: number;
     public views!: number;
     public status!: number;
-    public image! : string;
+    public image!: string;
     public created_at!: string | Date;
     public updated_at!: string | Date;
-    public memory! : string;
-    public color! : string;
-    public price! : number;
-    public images : string[] = [];
-    public brand_name! : string;
+    public memory!: string;
+    public color!: string;
+    public price!: number;
+    public options!: object[];
+    public detail!: object;
+    public brand_name!: string;
 }
 
 Products.init(
@@ -38,11 +39,6 @@ Products.init(
         },
         sale_off: {
             type: INTEGER,
-            allowNull: false,
-        },
-        launch_time: {
-            type: DataTypes.DATE,
-            defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
             allowNull: false,
         },
         views: {
