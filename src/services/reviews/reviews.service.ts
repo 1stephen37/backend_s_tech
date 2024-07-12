@@ -6,4 +6,8 @@ export default class ReviewsService {
     static async FindOneReviewById(id: number) {
 
     }
+
+    static async FindAllReviewsByIdProduct(id: number) {
+
+    }
 };
