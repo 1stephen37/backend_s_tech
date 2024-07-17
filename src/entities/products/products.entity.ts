@@ -15,7 +15,7 @@ class Products extends Model {
     public color!: string;
     public price!: number;
     public options!: object[];
-    public detail!: object;
+    public details!: {}[];
     public brand_name!: string;
 }
 

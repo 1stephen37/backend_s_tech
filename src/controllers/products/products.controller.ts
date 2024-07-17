@@ -5,8 +5,8 @@ import GalleryService from "../../services/gallery/gallery.service";
 import BrandsService from "../../services/brands/brands.service";
 import OptionsService from "../../services/options/options.service";
 import {Op} from 'sequelize';
-import ProductDetails from "../../entities/product_details/product_details.entity";
 import ProductDetailService from "../../services/productDetails/productDetail.service";
+import SpecificationCategoryService from "../../services/SpecificationCategory/SpecificationCategory.service";
 
 const ProductsController = Router();
 
@@ -66,11 +66,13 @@ ProductsController.get('', async (req: Request, res: Response) => {
         }
         let products = await ProductService.FindAllProducts(filter);
         for (const index in products) {
-            const gallery = await GalleryService.FindPrimaryGalleryImageByIdProduct(products[index].id_product);
+            const [gallery, brand, options] = await Promise.all([
+                GalleryService.FindPrimaryGalleryImageByIdProduct(products[index].id_product),
+                BrandsService.FindNameBrandById(products[index].id_brand),
+                OptionsService.findOneOptionBasicByIdProduct(products[index].id_product, ['color', 'price', 'memory'])
+            ]);
             if (gallery) products[index].image = gallery.url;
-            const brand = await BrandsService.FindNameBrandById(products[index].id_brand);
             if (brand) products[index].brand_name = brand.name;
-            const options = await OptionsService.findOneOptionBasicByIdProduct(products[index].id_product, ['color', 'price', 'memory']);
             if (options) {
                 products[index].memory = options.memory;
                 products[index].color = options.color;
@@ -101,12 +103,9 @@ ProductsController.get('/detail/:id', async (req: Request, res: Response) => {
             res.status(HttpStatus.NO_CONTENT).json({message: 'don\'t have a id to find product'})
         }
         let product = await ProductService.getOneProductPyPk(id);
-        // console.log(product?.ProductDetail);
         if (product) {
             const brand = await BrandsService.FindNameBrandById(product.id_brand);
             if (brand) product.brand_name = brand.name;
-            const detail = await ProductDetailService.findDetailByIdProduct(product.id_product);
-            if(detail) product.detail = detail;
             let optionsList = await OptionsService.findAllOptionsByIdProduct(product.id_product, ['color', 'price', 'quantity', 'memory', 'id_gallery']);
             if (optionsList) {
                 for (const index in optionsList) {
@@ -115,8 +114,20 @@ ProductsController.get('/detail/:id', async (req: Request, res: Response) => {
                 }
                 product.options = optionsList;
             }
+            let SpecificationCategoryList = await SpecificationCategoryService.findAllSpecificationCategoryByIdProduct(product.id_product, ['name', 'id_specification_category']);
+            if (SpecificationCategoryList) {
+                console.log(SpecificationCategoryList)
+                if (SpecificationCategoryList.length > 0) {
+                    for (let index in SpecificationCategoryList) {
+                        let detail = await ProductDetailService.findAllDetailsByIdSpecificationCategory(SpecificationCategoryList[index].id_specification_category, ['name', 'value']);
+                        if (detail) {
+                            SpecificationCategoryList[index].detail = detail
+                        }
+                    }
+                    product.details = SpecificationCategoryList;
+                }
+            }
         }
-        console.log( 'this is detail product  ' + product);
         if (!product) res.status(HttpStatus.NOT_FOUND).json({message: 'Product not found'});
         res.status(HttpStatus.SUCCESS).json({data: product});
     } catch (error: Error | any) {
