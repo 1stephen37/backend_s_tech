@@ -16,4 +16,12 @@ export default class UsersService {
         return await UsersEntity.findAll(filter);
     }
 
+    static async findUserByEmail(email: string) {
+        return await UsersEntity.findOne({
+            where: {
+                email: email
+            },
+            raw: true
+        })
+    }
 }

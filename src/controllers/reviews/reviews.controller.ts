@@ -19,7 +19,7 @@ ReviewsController.get('', async (req: Request, res: Response) => {
         if (reviewsList.length > 0) {
             for (let index in reviewsList) {
                 const [replies, user] = await Promise.all([
-                    RepliesService.FindAllRepliesByIdReview(reviewsList[index].id_review, ['content','created_at','updated_at', 'id_user']),
+                    RepliesService.FindAllRepliesByIdReview(reviewsList[index].id_review, ['content', 'created_at', 'updated_at', 'id_user']),
                     UsersService.findUsersById(reviewsList[index].id_user, ['name', 'image'])
                 ])
                 if (user) {
@@ -54,6 +54,19 @@ ReviewsController.get('', async (req: Request, res: Response) => {
     try {
 
     } catch (error: Error | any) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+    }
+})
+
+ReviewsController.post('/reply/add', async (req: Request, res: Response) => {
+    try {
+        const data = req.body;
+        console.log(data);
+        res.status(HttpStatus.SUCCESS).json({
+            data: data
+        })
+    } catch (error: Error | any) {
+        console.log(error.message)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
     }
 })
