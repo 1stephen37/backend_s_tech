@@ -8,10 +8,10 @@ class Users extends Model {
     public email!: string;
     public address!: string;
     public phone!: string;
-    public image! : string;
+    public image!: string;
     public created_at!: string | Date;
     public updated_at!: string | Date;
-    public role! : number;
+    public role!: number;
 }
 
 Users.init(
@@ -34,12 +34,10 @@ Users.init(
             allowNull: false,
         },
         address: {
-            type: STRING,
-            allowNull: false,
+            type: STRING
         },
         phone: {
-            type: STRING,
-            allowNull: false,
+            type: STRING
         },
         image: {
             type: STRING,

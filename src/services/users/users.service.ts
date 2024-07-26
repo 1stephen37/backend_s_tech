@@ -24,4 +24,11 @@ export default class UsersService {
             raw: true
         })
     }
+
+    static async createUser(user: {}) {
+        return await UsersEntity.create(user, {
+            returning: true,
+            raw: true
+        })
+    }
 }
