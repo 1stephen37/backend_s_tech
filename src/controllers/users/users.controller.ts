@@ -43,6 +43,8 @@ UsersController.post('/sign-in', async (req: Request, res: Response) => {
                         name: userOnSystem.name,
                         image: userOnSystem.image,
                         role: userOnSystem.role,
+                        address: userOnSystem.address,
+                        phone: userOnSystem.phone,
                     }
                 })
             }
@@ -68,6 +70,8 @@ UsersController.post('/sign-up', async (req: Request, res: Response) => {
                     name: newUser.name,
                     image: newUser.image,
                     role: newUser.role,
+                    address: newUser.address,
+                    phone: newUser.phone,
                     accessToken,
                     refreshToken
                 }
@@ -84,7 +88,7 @@ UsersController.post('/google', async (req: Request, res: Response) => {
         const user = req.body;
         const userOnSystem = await UsersService.findUserByEmail(user.email);
         if (userOnSystem) {
-            if (userOnSystem.password === '') {
+            if (userOnSystem.password === "") {
                 let accessToken = createToken(userOnSystem.id_user, userOnSystem.role, 15 * 60 * 60)
                 let refreshToken = createToken(userOnSystem.id_user, userOnSystem.role, 30 * 60 * 60)
                 res.status(HttpStatus.SUCCESS).json({
@@ -95,9 +99,13 @@ UsersController.post('/google', async (req: Request, res: Response) => {
                         name: userOnSystem.name,
                         image: userOnSystem.image,
                         role: userOnSystem.role,
+                        address: userOnSystem.address,
+                        phone: userOnSystem.phone,
                     }
                 });
             } else {
+                console.log(userOnSystem.password);
+                console.log(userOnSystem.password == "");
                 res.status(HttpStatus.CONFLICT).json({message: "Bạn đã đăng kí bằng email và mật khẩu trước đó"})
             }
         } else {
@@ -112,6 +120,8 @@ UsersController.post('/google', async (req: Request, res: Response) => {
                     name: newUser.name,
                     image: newUser.image,
                     role: newUser.role,
+                    address: newUser.address,
+                    phone: newUser.phone,
                 }
             });
         }

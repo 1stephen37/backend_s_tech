@@ -11,6 +11,7 @@ import ProductsController from "./controllers/products/products.controller";
 import OrdersController from "./controllers/orders/orders.controller";
 import Order_detailsController from "./controllers/orderDetails/order_details.controller";
 import UsersController from "./controllers/users/users.controller";
+import DeliveriesController from "./controllers/deliveries/deliveries.controller";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.get('/', (req : Request, res : Response) => {
 const apiRouter: Router = express.Router();
 
 apiRouter.use('/brands', BrandsController);
+apiRouter.use('/deliveries', DeliveriesController);
 apiRouter.use('/users', UsersController);
 apiRouter.use('/reviews', ReviewsController);
 apiRouter.use('/products', ProductsController);

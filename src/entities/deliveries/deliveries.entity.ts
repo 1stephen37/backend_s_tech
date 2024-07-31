@@ -1,25 +1,17 @@
 import {Model, DataTypes, INTEGER, STRING} from 'sequelize';
 import sequelize from '../../sequelize';
 
-class Products extends Model {
-    public id_product!: string;
-    public id_brand!: string;
+class Deliveries extends Model {
+    public id_delivery!: string;
     public name!: string;
-    public sale_off!: number;
-    public views!: number;
+    public price!: number;
+    public speed!: string;
     public status!: number;
-    public image!: string;
     public created_at!: string | Date;
     public updated_at!: string | Date;
-    public memory!: string;
-    public color!: string;
-    public price!: number;
-    public options!: object[];
-    public details!: {}[];
-    public brand_name!: string;
 }
 
-Products.init(
+Deliveries.init(
     {
         id_delivery: {
             type: INTEGER,
@@ -55,12 +47,12 @@ Products.init(
     },
     {
         sequelize,
-        modelName: 'Products',
-        tableName: 'products',
+        modelName: 'Deliveries',
+        tableName: 'deliveries',
         timestamps: true,
         updatedAt: 'updated_at',
         createdAt: 'created_at',
     }
 );
 
-export default Products;
+export default Deliveries;
