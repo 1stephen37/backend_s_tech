@@ -45,6 +45,7 @@ UsersController.post('/sign-in', async (req: Request, res: Response) => {
                         role: userOnSystem.role,
                         address: userOnSystem.address,
                         phone: userOnSystem.phone,
+                        email: userOnSystem.email
                     }
                 })
             }
@@ -72,6 +73,7 @@ UsersController.post('/sign-up', async (req: Request, res: Response) => {
                     role: newUser.role,
                     address: newUser.address,
                     phone: newUser.phone,
+                    email: newUser.email,
                     accessToken,
                     refreshToken
                 }
@@ -101,6 +103,7 @@ UsersController.post('/google', async (req: Request, res: Response) => {
                         role: userOnSystem.role,
                         address: userOnSystem.address,
                         phone: userOnSystem.phone,
+                        email: userOnSystem.email
                     }
                 });
             } else {
@@ -122,6 +125,7 @@ UsersController.post('/google', async (req: Request, res: Response) => {
                     role: newUser.role,
                     address: newUser.address,
                     phone: newUser.phone,
+                    email: newUser.email
                 }
             });
         }

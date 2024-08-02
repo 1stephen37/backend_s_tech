@@ -16,12 +16,13 @@ export default class UsersService {
         return await UsersEntity.findAll(filter);
     }
 
-    static async findUserByEmail(email: string) {
+    static async findUserByEmail(email: string, attributes?: string[]) {
         return await UsersEntity.findOne({
             where: {
                 email: email
             },
-            raw: true
+            raw: true,
+            attributes
         })
     }
 

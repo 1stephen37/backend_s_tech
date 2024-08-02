@@ -12,6 +12,8 @@ import OrdersController from "./controllers/orders/orders.controller";
 import Order_detailsController from "./controllers/orderDetails/order_details.controller";
 import UsersController from "./controllers/users/users.controller";
 import DeliveriesController from "./controllers/deliveries/deliveries.controller";
+import vouchersController from "./controllers/vouchers/vouchers.controller";
+import ShopController from "./controllers/shop/shop.controller";
 
 const app = express();
 
@@ -29,7 +31,7 @@ sequelize.sync()
         console.log('Database synchronized');
     })
 
-app.get('/', (req : Request, res : Response) => {
+app.get('/', (req: Request, res: Response) => {
     res.send(`
         <h1 style="text-align: center; font-size: 30px; margin-top: 50px">Đây là Website backend Stech api của Nguyễn Tiến (Stephen Nguyễn)</h1>
     `);
@@ -37,6 +39,8 @@ app.get('/', (req : Request, res : Response) => {
 
 const apiRouter: Router = express.Router();
 
+apiRouter.use('/shop', ShopController);
+apiRouter.use('/vouchers', vouchersController);
 apiRouter.use('/brands', BrandsController);
 apiRouter.use('/deliveries', DeliveriesController);
 apiRouter.use('/users', UsersController);
