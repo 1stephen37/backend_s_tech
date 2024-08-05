@@ -2,11 +2,11 @@ import {Model, INTEGER, STRING} from 'sequelize';
 import sequelize from '../../sequelize';
 
 class BrandsEntity extends Model {
-    public id_brand!: number;
+    public id_brand!: string;
     public name!: string;
-    public description!: number;
     public logo!: string;
     public status!: number;
+    public count?: number;
 }
 
 BrandsEntity.init(
@@ -17,10 +17,6 @@ BrandsEntity.init(
             primaryKey: true,
         },
         name: {
-            type: STRING,
-            allowNull: false,
-        },
-        description: {
             type: STRING,
             allowNull: false,
         },

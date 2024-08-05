@@ -10,6 +10,7 @@ class OrderDetails extends Model {
     public memory!: string;
     public color!: string;
     public quantity!: string;
+    public product_name!: string;
 }
 
 OrderDetails.init(

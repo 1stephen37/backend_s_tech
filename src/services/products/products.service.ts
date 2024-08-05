@@ -8,8 +8,8 @@ export default class ProductService {
         return await Products.findAll(filter);
     }
 
-    static async getOneProductPyPk(id_product: string) {
-        return await Products.findByPk(id_product, {raw: true});
+    static async getOneProductPyPk(id_product: string, attributes?: string[]) {
+        return await Products.findByPk(id_product, {raw: true, attributes});
     }
 
     static async getCountProductsByBrand(id_brand: string, status: number = 1) {

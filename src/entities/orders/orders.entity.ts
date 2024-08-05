@@ -14,9 +14,18 @@ class Orders extends Model {
     public ship_fee!: number;
     public origin_total!: number;
     public total!: number;
-    public image!: string;
+    public avatar!: string;
     public created_at!: string | Date;
     public updated_at!: string | Date;
+    public details!: {
+        id_product: string;
+        origin_price: number;
+        sale_price: number;
+        memory: string;
+        color: string;
+        quantity: string;
+        product_name: string;
+    }[]
 }
 
 Orders.init(
@@ -42,6 +51,10 @@ Orders.init(
         },
         voucher_code: {
             type: STRING,
+            allowNull: true,
+        },
+        email: {
+            type: STRING,
             allowNull: false,
         },
         phone: {
@@ -58,15 +71,14 @@ Orders.init(
         },
         status: {
             type: INTEGER,
-            allowNull: false,
         },
         distance: {
             type: FLOAT,
-            allowNull: false,
+            allowNull: true,
         },
         ship_fee: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         origin_total: {
             type: INTEGER,
@@ -79,12 +91,28 @@ Orders.init(
         created_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false,
+            allowNull: true,
         },
         updated_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false,
+            allowNull: true,
+        },
+        receiver_email: {
+            type: STRING,
+            allowNull: true,
+        },
+        receiver_phone: {
+            type: STRING,
+            allowNull: true,
+        },
+        receiver_name: {
+            type: STRING,
+            allowNull: true,
+        },
+        receiver_address: {
+            type: STRING,
+            allowNull: true,
         },
     },
     {

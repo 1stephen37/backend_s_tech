@@ -10,6 +10,8 @@ class Reviews extends Model {
     public content!: string;
     public createdAt!: string;
     public updatedAt!: string;
+    public product_name!: string;
+    public product_image!: string;
     public replies!: {
         name: string;
         avatar: string;

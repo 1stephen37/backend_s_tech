@@ -4,16 +4,60 @@ import {auth} from "../../middlewares/auth.middleware";
 import OrdersService from "../../services/orders/orders.service";
 import OrderDetailsService from "../../services/orderDetails/orderDetails.service";
 import UsersService from "../../services/users/users.service";
+import {hashPassword} from "../../libraries/HashPassword.library";
+import Products from "../../entities/products/products.entity";
+import ProductService from "../../services/products/products.service";
+import {Op} from "sequelize";
 
 const ordersController = Router();
 
 ordersController.get('', auth, async (req: Request, res: Response) => {
     try {
-        const orderList = await OrdersService.findAllOrders();
+        const offset = req.query.offset;
+        const limit = req.query.limit;
+        const id_user = req.query.id_user;
+        let filter: {
+            where?: { id_brand?: string, name?: {}, id_user: string },
+            offset?: number,
+            limit?: number,
+            order?: [[string, string]]
+        } = {};
+        if (offset) filter.offset = parseInt(offset as string);
+        if (limit) filter.limit = parseInt(limit as string);
+        if (id_user) {
+            console.log(id_user);
+            if (filter.where) {
+                filter.where.id_user = id_user.toString();
+            } else {
+                filter.where = {
+                    id_user: id_user.toString()
+                };
+            }
+        }
+        let orderList = await OrdersService.findAllOrders(filter);
+        console.log(orderList)
+        for (let index in orderList) {
+            let [user, details] = await Promise.all([
+                await UsersService.findUsersById(orderList[index].id_user),
+                await OrderDetailsService.findOrderDetailsByOrder(orderList[index].id_order, ['id_product', 'origin_price', 'sale_price', 'memory', 'color', 'quantity'])
+            ]);
+            if (user) {
+                orderList[index].avatar = user.image;
+            }
+            if (details) {
+                for (let index in details) {
+                    let product = await ProductService.getOneProductPyPk(details[index].id_product, ['name']);
+                    if (product) details[index].product_name = product.name;
+                }
+                orderList[index].details = details
+            }
+        }
+
         res.status(HttpStatus.SUCCESS).json({
             data: orderList
         })
     } catch (error: Error | any) {
+        console.log(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })
@@ -23,23 +67,31 @@ ordersController.post('/create', async (req: Request, res: Response) => {
         const order = req.body.order;
         const orderDetails = req.body.orderDetails;
 
-        order.id_user = await UsersService.findUserByEmail(order.email, ['id_user'])
-
-        const newOrder = await OrdersService.CreateOrder(order);
-        let newOrderDetails = [];
-        if (newOrder) {
-            for (const index in orderDetails) {
-                orderDetails[index].id_order = newOrder.id_order;
-                newOrderDetails.push(await OrderDetailsService.createOrderDetails(orderDetails[index]));
+        const user = await UsersService.findUserByEmail(order.email, ['id_user']);
+        if (user) {
+            order.id_user = user.id_user;
+            const newOrder = await OrdersService.CreateOrder(order);
+            let newOrderDetails = [];
+            if (newOrder) {
+                for (const index in orderDetails) {
+                    orderDetails[index].id_order = newOrder.id_order;
+                    newOrderDetails.push(await OrderDetailsService.createOrderDetails(orderDetails[index]));
+                }
             }
-        }
-        if (newOrder && newOrderDetails.length > 0) {
-            res.status(HttpStatus.SUCCESS).json({
-                data: 'Đơn hàng của bạn đang được xử lý'
+            if (newOrder && newOrderDetails.length > 0) {
+                res.status(HttpStatus.SUCCESS).json({
+                    data: 'Đơn hàng của bạn đang được xử lý'
+                })
+            }
+        } else {
+            res.status(HttpStatus.NOT_FOUND).json({
+                error: "Không tìm thấy user trên hệ thống"
             })
         }
 
+
     } catch (error: Error | any) {
+        console.log(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })
@@ -48,27 +100,44 @@ ordersController.post('/create/guest', async (req: Request, res: Response) => {
     try {
         const order = req.body.order;
         const orderDetails = req.body.orderDetails;
-        const newUser = await UsersService.createUser({
-            name: order.name,
-            email: order.email,
-            address: order.address
-        })
 
-        order.id_user = newUser.id_user;
-        const newOrder = await OrdersService.CreateOrder(order);
-        let newOrderDetails = [];
-        if (newOrder) {
-            for (const index in orderDetails) {
-                newOrderDetails.push(await OrderDetailsService.createOrderDetails(orderDetails[index]));
-            }
-        }
-        if (newOrder && newOrderDetails.length > 0) {
-            res.status(HttpStatus.SUCCESS).json({
-                data: 'Đơn hàng của bạn đang được xử lý'
+        let user = await UsersService.findUserByEmail(order.email);
+
+        if (!user) {
+            let password = await hashPassword('Guest@1');
+            user = await UsersService.createUser({
+                name: order.name,
+                email: order.email,
+                phone: order.phone,
+                address: order.address,
+                password
             })
         }
 
+        if (user) {
+            order.id_user = user.id_user;
+            const newOrder = await OrdersService.CreateOrder(order);
+            let newOrderDetails = [];
+            if (newOrder) {
+                for (const index in orderDetails) {
+                    orderDetails[index].id_order = newOrder.id_order;
+                    newOrderDetails.push(await OrderDetailsService.createOrderDetails(orderDetails[index]));
+                }
+            }
+            if (newOrder && newOrderDetails.length > 0) {
+                res.status(HttpStatus.SUCCESS).json({
+                    data: 'Đơn hàng của bạn đang được xử lý'
+                })
+            }
+        } else {
+            res.status(HttpStatus.NOT_FOUND).json({
+                error: "Không tìm thấy user trên hệ thống"
+            })
+        }
+
+
     } catch (error: Error | any) {
+        console.log(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })

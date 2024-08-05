@@ -10,9 +10,18 @@ const UsersController = Router();
 
 UsersController.get('', async (req: Request, res: Response) => {
     try {
-        let filter: {} = {};
+        const offset = req.query.offset;
+        const limit = req.query.limit;
+        let filter: {
+            where?: { id_brand?: string, name?: {} },
+            offset?: number,
+            limit?: number,
+            order?: [[string, string]]
+        } = {};
+        if (offset) filter.offset = parseInt(offset as string);
+        if (limit) filter.limit = parseInt(limit as string);
         const usersList = await UsersService.findAllUsers(filter, ['name', 'id_user', 'image', 'address',
-            'phone', 'role', 'created_at', 'updated_at']);
+            'phone', 'role', 'email']);
         res.status(HttpStatus.SUCCESS).json({
             data: usersList
         })
@@ -30,6 +39,9 @@ UsersController.post('/sign-in', async (req: Request, res: Response) => {
         }
         let isPasswordCorrect;
         if (userOnSystem) {
+            // if (!(await comparePassword('guest', userOnSystem.password))) {
+            //
+            // }
             isPasswordCorrect = await comparePassword(user.password, userOnSystem.password);
             if (!isPasswordCorrect) res.status(HttpStatus.UNAUTHORIZED).json({message: "Mật khẩu không đúng"})
             else {
@@ -81,7 +93,7 @@ UsersController.post('/sign-up', async (req: Request, res: Response) => {
         }
     } catch (error: Error | any) {
         console.log(error)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
     }
 })
 
