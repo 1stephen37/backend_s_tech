@@ -1,6 +1,6 @@
 import {Request, Response, Router} from "express";
 import {HttpStatus} from "../../constants";
-import {auth} from "../../middlewares/auth.middleware";
+import {auth, authAdmin} from "../../middlewares/auth.middleware";
 import OrdersService from "../../services/orders/orders.service";
 import OrderDetailsService from "../../services/orderDetails/orderDetails.service";
 import UsersService from "../../services/users/users.service";
@@ -80,7 +80,7 @@ ordersController.post('/create', async (req: Request, res: Response) => {
             }
             if (newOrder && newOrderDetails.length > 0) {
                 res.status(HttpStatus.SUCCESS).json({
-                    data: 'Đơn hàng của bạn đang được xử lý'
+                    message: 'Đơn hàng của bạn đang được xử lý'
                 })
             }
         } else {
@@ -104,7 +104,7 @@ ordersController.post('/create/guest', async (req: Request, res: Response) => {
         let user = await UsersService.findUserByEmail(order.email);
 
         if (!user) {
-            let password = await hashPassword('Guest@1');
+            let password = await hashPassword('Guest@123');
             user = await UsersService.createUser({
                 name: order.name,
                 email: order.email,
@@ -126,7 +126,7 @@ ordersController.post('/create/guest', async (req: Request, res: Response) => {
             }
             if (newOrder && newOrderDetails.length > 0) {
                 res.status(HttpStatus.SUCCESS).json({
-                    data: 'Đơn hàng của bạn đang được xử lý'
+                    message: 'Đơn hàng của bạn đang được xử lý'
                 })
             }
         } else {
@@ -139,6 +139,36 @@ ordersController.post('/create/guest', async (req: Request, res: Response) => {
     } catch (error: Error | any) {
         console.log(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
+    }
+})
+
+ordersController.post('/update/:id', authAdmin, async (req: Request, res: Response) => {
+    try {
+        const id_order = req.params.id;
+
+    } catch (err: Error | any) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({err: err.message})
+    }
+})
+
+ordersController.post('/update/status/:id', authAdmin, async (req: Request, res: Response) => {
+    try {
+        const id_order = req.params.id;
+        const status = req.body.status;
+        if(status === 0) {
+
+        } else if(status === 1) {
+
+        } else if(status === 2) {
+
+        } else if(status === 3) {
+
+        } else if(status === 4) {
+
+        }
+
+    } catch (err: Error | any) {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({err: err.message})
     }
 })
 

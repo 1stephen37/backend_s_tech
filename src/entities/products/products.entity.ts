@@ -43,21 +43,21 @@ Products.init(
         },
         views: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         status: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         created_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false,
+            allowNull: true,
         },
         updated_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: false,
+            allowNull: true,
         },
     },
     {

@@ -33,6 +33,7 @@ Options.init(
                 model: 'gallery', // Tên bảng mà bạn muốn liên kết đến
                 key: 'id_gallery', // Tên cột trong bảng categories mà bạn muốn liên kết đến
             },
+            allowNull: true,
         },
         color: {
             type: STRING,
@@ -52,7 +53,7 @@ Options.init(
         },
         is_basic: {
             type: BOOLEAN,
-            allowNull: false,
+            allowNull: true,
         },
     },
     {

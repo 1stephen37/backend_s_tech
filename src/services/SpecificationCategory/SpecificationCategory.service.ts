@@ -10,4 +10,11 @@ export default class SpecificationCategoryService {
             attributes
         })
     }
+
+    static async createSpecificationCategory(specificationCategory: {}) {
+        return await SpecificationCategory.create(specificationCategory, {
+            returning: true,
+            raw: true
+        })
+    }
 }

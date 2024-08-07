@@ -18,8 +18,8 @@ ProductDetails.init(
         id_specification_category: {
             type: INTEGER,
             references: {
-                model: ' specification_category', // Tên bảng mà bạn muốn liên kết đến
-                key: ' id_specification_category', // Tên cột trong bảng categories mà bạn muốn liên kết đến
+                model: 'specification_category', // Tên bảng mà bạn muốn liên kết đến
+                key: 'id_specification_category', // Tên cột trong bảng categories mà bạn muốn liên kết đến
             },
         },
         name: {

@@ -10,4 +10,11 @@ export default class ProductDetailService {
             attributes
         });
     }
+
+    static async createDetail(detail: {}) {
+        return await ProductDetails.create(detail, {
+            returning: true,
+            raw: true
+        })
+    }
 }

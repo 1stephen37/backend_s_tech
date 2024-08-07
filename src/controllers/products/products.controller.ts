@@ -7,6 +7,8 @@ import OptionsService from "../../services/options/options.service";
 import {Op} from 'sequelize';
 import ProductDetailService from "../../services/productDetails/productDetail.service";
 import SpecificationCategoryService from "../../services/SpecificationCategory/SpecificationCategory.service";
+import SpecificationCategory from "../../entities/specification_category/specification_category.entity";
+// import upload from "../../middlewares/uploads.middleware";
 
 const ProductsController = Router();
 
@@ -135,5 +137,50 @@ ProductsController.get('/detail/:id', async (req: Request, res: Response) => {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })
+
+// ProductsController.post('/create', upload.any(), async (req: Request, res: Response) => {
+//     try {
+//         const imageFile = req.files;
+//         // console.log(imageFile);
+//
+//         console.log(req)
+//         // console.log(req.body);
+//         const data = req.body;
+//         // console.log(data);
+//         const {product, options, technicalSpecifications} = data;
+//
+//         // console.log(product)
+//         let newProductCreate = await ProductService.createProduct(product);
+//
+//         if (newProductCreate) {
+//             for (let option of options) {
+//                 option.id_product = newProductCreate.id_product;
+//                 let newOption = await OptionsService.createOption(option);
+//             }
+//             for (let item of technicalSpecifications) {
+//                 let name = item.specificationCategory;
+//                 let newSpecificationCategory = await SpecificationCategoryService.createSpecificationCategory({
+//                     id_product: newProductCreate.id_product,
+//                     name
+//                 });
+//                 if (newSpecificationCategory) {
+//                     let details = item.details;
+//                     for (let detail of details) {
+//                         detail.id_specification_category = newSpecificationCategory.id_specification_category;
+//                         let newDetail = await ProductDetailService.createDetail(detail)
+//                     }
+//                 }
+//             }
+//         } else {
+//             console.log("123")
+//             res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: 'có lỗi khi tạo sản phẩm'})
+//         }
+//
+//
+//     } catch (err: Error | any) {
+//         console.error(err)
+//         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: err.message})
+//     }
+// })
 
 export default ProductsController;

@@ -26,7 +26,7 @@ UsersController.get('', async (req: Request, res: Response) => {
             data: usersList
         })
     } catch (error: Error | any) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
     }
 })
 
@@ -35,15 +35,12 @@ UsersController.post('/sign-in', async (req: Request, res: Response) => {
         const user = req.body;
         const userOnSystem = await UsersService.findUserByEmail(user.email);
         if (!userOnSystem) {
-            res.status(HttpStatus.NOT_FOUND).json({message: "Email không tồn tại trên hệ thống"})
+            res.status(HttpStatus.NOT_FOUND).json({error: "Email không tồn tại trên hệ thống"})
         }
         let isPasswordCorrect;
         if (userOnSystem) {
-            // if (!(await comparePassword('guest', userOnSystem.password))) {
-            //
-            // }
             isPasswordCorrect = await comparePassword(user.password, userOnSystem.password);
-            if (!isPasswordCorrect) res.status(HttpStatus.UNAUTHORIZED).json({message: "Mật khẩu không đúng"})
+            if (!isPasswordCorrect) res.status(HttpStatus.UNAUTHORIZED).json({error: "Mật khẩu không đúng"})
             else {
                 let accessToken = createToken(userOnSystem.id_user, userOnSystem.role, 15 * 60 * 60)
                 let refreshToken = createToken(userOnSystem.id_user, userOnSystem.role, 30 * 60 * 60)
@@ -63,7 +60,7 @@ UsersController.post('/sign-in', async (req: Request, res: Response) => {
             }
         }
     } catch (error: Error | any) {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
     }
 })
 
@@ -71,7 +68,7 @@ UsersController.post('/sign-up', async (req: Request, res: Response) => {
     try {
         const user = req.body;
         const userOnSystem = await UsersService.findUserByEmail(user.email);
-        if (userOnSystem) res.status(HttpStatus.UNAUTHORIZED).json({message: "Email đã tồn tại trên hệ thống"});
+        if (userOnSystem) res.status(HttpStatus.UNAUTHORIZED).json({error: "Email đã tồn tại trên hệ thống"});
         else {
             user.password = await hashPassword(user.password);
             const newUser = await Users.create(user, {returning: true, raw: true});
@@ -121,7 +118,7 @@ UsersController.post('/google', async (req: Request, res: Response) => {
             } else {
                 console.log(userOnSystem.password);
                 console.log(userOnSystem.password == "");
-                res.status(HttpStatus.CONFLICT).json({message: "Bạn đã đăng kí bằng email và mật khẩu trước đó"})
+                res.status(HttpStatus.CONFLICT).json({error: "Bạn đã đăng kí bằng email và mật khẩu trước đó"})
             }
         } else {
             const newUser = await UsersService.createUser(user);
@@ -143,7 +140,7 @@ UsersController.post('/google', async (req: Request, res: Response) => {
         }
     } catch (error: Error | any) {
         console.log(error.message)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message})
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })
 

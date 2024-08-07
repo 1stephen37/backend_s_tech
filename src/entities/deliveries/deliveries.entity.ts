@@ -32,7 +32,7 @@ Deliveries.init(
         },
         status: {
             type: INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         created_at: {
             type: DataTypes.DATE,

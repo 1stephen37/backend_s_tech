@@ -17,6 +17,7 @@ class Orders extends Model {
     public avatar!: string;
     public created_at!: string | Date;
     public updated_at!: string | Date;
+    public payment_method!: string;
     public details!: {
         id_product: string;
         origin_price: number;
@@ -48,6 +49,10 @@ Orders.init(
                 model: 'users', // Tên bảng mà bạn muốn liên kết đến
                 key: 'id_user', // Tên cột trong bảng categories mà bạn muốn liên kết đến
             },
+        },
+        payment_method: {
+            type: STRING,
+            allowNull: true,
         },
         voucher_code: {
             type: STRING,
@@ -96,14 +101,6 @@ Orders.init(
         updated_at: {
             type: DataTypes.DATE,
             defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-            allowNull: true,
-        },
-        receiver_email: {
-            type: STRING,
-            allowNull: true,
-        },
-        receiver_phone: {
-            type: STRING,
             allowNull: true,
         },
         receiver_name: {

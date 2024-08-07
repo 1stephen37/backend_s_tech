@@ -1,6 +1,7 @@
 import Products from "../../entities/products/products.entity";
 import {Op} from "sequelize";
 import ProductDetails from "../../entities/product_details/product_details.entity";
+import ProductsEntity from "../../entities/products/products.entity";
 
 export default class ProductService {
     static async FindAllProducts(filter: {} = {raw: true}) {
@@ -38,5 +39,9 @@ export default class ProductService {
                 status: status
             }
         });
+    }
+
+    static async createProduct(product: {}) {
+        return await ProductsEntity.create(product, {returning: true, raw: true});
     }
 }
