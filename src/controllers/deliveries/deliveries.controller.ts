@@ -33,7 +33,6 @@ DeliveriesController.post('/create', async (req: Request, res: Response) => {
 DeliveriesController.patch('/update/:id', authAdmin, async (req: Request, res: Response) => {
     try {
         const id_delivery = req.params.id;
-        console.log(id_delivery);
         const delivery = req.body;
         console.log(req.body)
         DeliveriesService.updateDelivery(id_delivery, delivery)

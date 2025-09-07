@@ -8,7 +8,7 @@ import {auth} from "../../middlewares/auth.middleware";
 
 const UsersController = Router();
 
-UsersController.get('', async (req: Request, res: Response) => {
+UsersController.get('', auth, async (req: Request, res: Response) => {
     try {
         const offset = req.query.offset;
         const limit = req.query.limit;
@@ -89,7 +89,6 @@ UsersController.post('/sign-up', async (req: Request, res: Response) => {
             })
         }
     } catch (error: Error | any) {
-        console.log(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});
     }
 })
@@ -116,8 +115,6 @@ UsersController.post('/google', async (req: Request, res: Response) => {
                     }
                 });
             } else {
-                console.log(userOnSystem.password);
-                console.log(userOnSystem.password == "");
                 res.status(HttpStatus.CONFLICT).json({error: "Bạn đã đăng kí bằng email và mật khẩu trước đó"})
             }
         } else {
@@ -139,7 +136,6 @@ UsersController.post('/google', async (req: Request, res: Response) => {
             });
         }
     } catch (error: Error | any) {
-        console.log(error.message)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })
@@ -148,6 +144,9 @@ UsersController.get('/:id', auth, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const user = UsersService.findUsersById(id);
+        res.status(HttpStatus.SUCCESS).json({
+            data: user
+        })
     } catch (error: Error | any) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({message: error.message});
     }

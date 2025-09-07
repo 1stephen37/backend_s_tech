@@ -35,7 +35,7 @@ ordersController.get('', auth, async (req: Request, res: Response) => {
             }
         }
         let orderList = await OrdersService.findAllOrders(filter);
-        console.log(orderList)
+        // console.log(orderList)
         for (let index in orderList) {
             let [user, details] = await Promise.all([
                 await UsersService.findUsersById(orderList[index].id_user),

@@ -14,6 +14,8 @@ import UsersController from "./controllers/users/users.controller";
 import DeliveriesController from "./controllers/deliveries/deliveries.controller";
 import vouchersController from "./controllers/vouchers/vouchers.controller";
 import ShopController from "./controllers/shop/shop.controller";
+import DashboardController from "./controllers/dashboard/dashboard.controller";
+import TestController from "./controllers/test/test.controller";
 
 const app = express();
 
@@ -46,6 +48,8 @@ apiRouter.use('/deliveries', DeliveriesController);
 apiRouter.use('/users', UsersController);
 apiRouter.use('/reviews', ReviewsController);
 apiRouter.use('/products', ProductsController);
+apiRouter.use('/dashboard', DashboardController);
+apiRouter.use('/test', TestController);
 apiRouter.use('/orders', OrdersController);
 apiRouter.use('/order_details', Order_detailsController);
 app.use('/api/v1', apiRouter);

@@ -1,7 +1,6 @@
 import {Router, Request, Response} from 'express';
 import {HttpStatus} from "../../constants";
 import ReviewsService from "../../services/reviews/reviews.service";
-import RepliesService from "../../services/replies/replies.service";
 import UsersService from "../../services/users/users.service";
 import ProductService from "../../services/products/products.service";
 
@@ -25,8 +24,7 @@ ReviewsController.get('', async (req: Request, res: Response) => {
         let reviewsList = await ReviewsService.FindAllReviews(filter);
         if (reviewsList.length > 0) {
             for (let index in reviewsList) {
-                const [replies, user, product] = await Promise.all([
-                    RepliesService.FindAllRepliesByIdReview(reviewsList[index].id_review, ['content', 'created_at', 'updated_at', 'id_user']),
+                const [user, product] = await Promise.all([
                     UsersService.findUsersById(reviewsList[index].id_user, ['name', 'image']),
                     ProductService.getOneProductPyPk(reviewsList[index].id_product, ['name']),
                 ])
@@ -38,16 +36,14 @@ ReviewsController.get('', async (req: Request, res: Response) => {
                     reviewsList[index].product_name = product.name;
                     reviewsList[index].product_image = product.image;
                 }
-                if (replies) {
-                    if (replies.length > 0) {
-                        for (let index in replies) {
-                            const user = await UsersService.findUsersById(replies[index].id_user, ['name']);
-                            if (user) {
-                                replies[index].name = user.name;
-                            }
-                        }
+                if (reviewsList[index].id_reply) {
+                    const indexParentReview = reviewsList.findIndex(r => r.id_review === reviewsList[index].id_reply);
+                    const indexReviewNow = reviewsList.findIndex(r => r.id_review === reviewsList[index].id_review);
+                    if (indexParentReview !== -1) {
+                        reviewsList[indexParentReview].replies = [];
+                        reviewsList[indexParentReview].replies.push(reviewsList[index]);
                     }
-                    reviewsList[index].replies = replies
+                    reviewsList.slice(indexReviewNow, indexReviewNow + 1);
                 }
 
             }
@@ -62,7 +58,7 @@ ReviewsController.get('', async (req: Request, res: Response) => {
     }
 })
 
-ReviewsController.get('', async (req: Request, res: Response) => {
+ReviewsController.get('/products/:id', async (req: Request, res: Response) => {
     try {
 
     } catch (error: Error | any) {

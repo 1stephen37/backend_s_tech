@@ -4,6 +4,7 @@ import sequelize from '../../sequelize';
 class Reviews extends Model {
     public id_review!: string;
     public id_product!: string;
+    public id_reply!: string;
     public id_user!: string;
     public name!: string;
     public avatar!: string;
@@ -31,6 +32,13 @@ Reviews.init(
             references: {
                 model: 'users', // Tên bảng mà bạn muốn liên kết đến
                 key: 'id_user', // Tên cột trong bảng categories mà bạn muốn liên kết đến
+            },
+        },
+        id_reply: {
+            type: INTEGER,
+            references: {
+                model: 'reviews', // Tên bảng mà bạn muốn liên kết đến
+                key: 'id_review', // Tên cột trong bảng categories mà bạn muốn liên kết đến
             },
         },
         id_product: {
