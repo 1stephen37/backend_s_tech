@@ -1,4 +1,5 @@
 import UsersEntity from "../../entities/users/users.entity";
+import usersEntity from "../../entities/users/users.entity";
 
 export default class UsersService {
     static async findUsersById(id_user: string, attributes?: string[]) {
@@ -31,5 +32,9 @@ export default class UsersService {
             returning: true,
             raw: true
         })
+    }
+
+    static async countAllUsers() {
+        return await usersEntity.count();
     }
 }

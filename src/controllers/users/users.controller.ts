@@ -12,6 +12,7 @@ UsersController.get('', auth, async (req: Request, res: Response) => {
     try {
         const offset = req.query.offset;
         const limit = req.query.limit;
+        let total = 0;
         let filter: {
             where?: { id_brand?: string, name?: {} },
             offset?: number,
@@ -22,8 +23,12 @@ UsersController.get('', auth, async (req: Request, res: Response) => {
         if (limit) filter.limit = parseInt(limit as string);
         const usersList = await UsersService.findAllUsers(filter, ['name', 'id_user', 'image', 'address',
             'phone', 'role', 'email']);
+        total = await UsersService.countAllUsers();
         res.status(HttpStatus.SUCCESS).json({
-            data: usersList
+            data: usersList,
+            paging: {
+                total: total
+            },
         })
     } catch (error: Error | any) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message});

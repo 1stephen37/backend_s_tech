@@ -17,4 +17,9 @@ export default class OrderDetailsService {
             raw: true
         })
     }
+
+    static async findOrderDetailWithFiler(filter: {} = {raw: true}) {
+        if (filter) filter = {...filter, raw: true};
+        return await Order_detailsEntity.findAll(filter);
+    }
 }

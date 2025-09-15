@@ -17,4 +17,8 @@ export default class BrandsService {
     static async CreateBrand(brand: BrandsEntity) {
         return await BrandsEntity.create({...brand}, {returning: true, raw: true})
     }
+
+    static async countAllBrands() {
+        return await BrandsEntity.count();
+    }
 }

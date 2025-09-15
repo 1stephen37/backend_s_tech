@@ -76,6 +76,7 @@ Orders.init(
         },
         status: {
             type: INTEGER,
+            allowNull: false,
         },
         distance: {
             type: FLOAT,

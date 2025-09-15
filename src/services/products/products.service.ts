@@ -33,12 +33,16 @@ export default class ProductService {
         });
     }
 
-    static async getCountAllProductsByStatus(status: number = 1) {
+    static async countProductsByStatus(status: number = 1) {
         return await Products.count({
             where: {
                 status: status
             }
         });
+    }
+
+    static async countAllProducts() {
+        return await Products.count();
     }
 
     static async createProduct(product: {}) {

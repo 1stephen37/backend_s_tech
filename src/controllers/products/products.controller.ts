@@ -48,7 +48,7 @@ ProductsController.get('', async (req: Request, res: Response) => {
         if (keyword) {
             if (filter.where) {
                 filter.where.name = {
-                    [Op.iLike]: `%${keyword}%` // Sử dụng iLike để không phân biệt hoa/thường
+                    [Op.iLike]: `%${keyword}%`
                 }
             } else {
                 filter.where = {
@@ -63,8 +63,8 @@ ProductsController.get('', async (req: Request, res: Response) => {
             count = await ProductService.getCountProductsByBrand(id_brand.toString());
         } else if (page && keyword) {
             count = await ProductService.getCountProductsByKeyword(keyword.toString());
-        } else if (page) {
-            count = await ProductService.getCountAllProductsByStatus();
+        } else {
+            count = await ProductService.countAllProducts();
         }
         let products = await ProductService.FindAllProducts(filter);
         for (const index in products) {

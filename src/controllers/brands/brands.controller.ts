@@ -10,18 +10,18 @@ BrandsController.get('', async (req: Request, res: Response) => {
         const role = req.query.role;
         const limit = req.query.limit;
         const offset = req.query.offset;
-        let count = 0;
+        let total = 0;
         let filter: { limit?: number, offset?: number } = {};
         if (limit) filter.limit = parseInt(limit as string);
         if (offset) filter.offset = parseInt(offset as string);
+        total = await BrandsService.countAllBrands();
         const brandsList = await BrandsService.FindAllBrands(filter);
-        console.log(role);
         if (role && role.toString() === 'admin') {
             for (let index in brandsList) {
                 brandsList[index].count = await ProductService.getCountProductsByBrand(brandsList[index].id_brand)
             }
         }
-        res.status(HttpStatus.SUCCESS).json({data: brandsList});
+        res.status(HttpStatus.SUCCESS).json({data: brandsList, paging: {total: total}});
     } catch (error: Error | any) {
         console.error(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
