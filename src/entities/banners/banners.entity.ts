@@ -1,4 +1,4 @@
-import {Model, DataTypes, INTEGER, STRING, BOOLEAN} from 'sequelize';
+import {Model, DataTypes, INTEGER, STRING} from 'sequelize';
 import sequelize from '../../sequelize';
 
 class Banners extends Model {
@@ -14,7 +14,7 @@ class Banners extends Model {
 
 Banners.init(
     {
-        id_voucher: {
+        id_banner: {
             type: INTEGER,
             autoIncrement: true,
             primaryKey: true,
@@ -26,13 +26,16 @@ Banners.init(
                 key: 'id_product',
             },
         },
-        code: {
+        slogan: {
             type: STRING,
             allowNull: false,
         },
-        discount: {
-            type: INTEGER,
-            allowNull: true,
+        image: {
+            type: STRING,
+        },
+        description: {
+            type: STRING,
+            allowNull: false,
         },
         status: {
             type: INTEGER,

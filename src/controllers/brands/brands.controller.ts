@@ -23,7 +23,6 @@ BrandsController.get('', async (req: Request, res: Response) => {
         }
         res.status(HttpStatus.SUCCESS).json({data: brandsList, paging: {total: total}});
     } catch (error: Error | any) {
-        console.error(error)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({error: error.message})
     }
 })

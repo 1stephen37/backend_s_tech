@@ -16,6 +16,7 @@ import vouchersController from "./controllers/vouchers/vouchers.controller";
 import ShopController from "./controllers/shop/shop.controller";
 import DashboardController from "./controllers/dashboard/dashboard.controller";
 import TestController from "./controllers/test/test.controller";
+import BannersController from "./controllers/banners/banners.controller";
 
 const app = express();
 
@@ -52,6 +53,7 @@ apiRouter.use('/dashboard', DashboardController);
 apiRouter.use('/test', TestController);
 apiRouter.use('/orders', OrdersController);
 apiRouter.use('/order_details', Order_detailsController);
+apiRouter.use('/banners', BannersController);
 app.use('/api/v1', apiRouter);
 
 app.listen(environment.port, () => {
